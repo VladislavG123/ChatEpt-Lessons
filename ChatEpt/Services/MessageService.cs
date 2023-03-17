@@ -6,11 +6,25 @@ namespace ChatEpt.Services;
 
 public class MessageService : IMessageService
 {
+    private readonly HttpClient _httpClient;
+    private const string Url = "https://whatthecommit.com/index.txt";
+    
+    public MessageService(HttpClient httpClient)
+    {
+        // Got from IoC aka DI
+        _httpClient = httpClient;
+    }
+    
+    /// <inheritdoc/>
     public MessageServiceDto GetAnswer(string request)
     {
-        // Get answer from https://whatthecommit.com/index.txt
-        // Return answer
+        var response = _httpClient.GetAsync(Url).Result;
+        if (!response.IsSuccessStatusCode)
+        {
+            throw new BadHttpRequestException($"Cannot get answer, status code: {response.StatusCode}");
+        }
 
-        return new MessageServiceDto(request, "Some Answer");
+        var answer = response.Content.ReadAsStringAsync().Result;
+        return new MessageServiceDto(request, answer.Trim());
     }
 }

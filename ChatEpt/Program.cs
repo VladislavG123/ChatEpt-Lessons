@@ -4,9 +4,10 @@ using ChatEpt.Services.Abstract;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddSingleton<IMessageService, MessageService>(); // 1 instance для всех запросов
-// builder.Services.AddScoped<IMessageService, MessageService>(); // новый instance для каждого запроса
-// builder.Services.AddTransient<IMessageService, MessageService>(); // новый instance при каждом обращении
+builder.Services.AddSingleton<IMessageService, MessageService>(); 
+
+// Add HttpClients
+builder.Services.AddHttpClient<MessageService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
