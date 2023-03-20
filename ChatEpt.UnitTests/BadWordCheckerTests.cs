@@ -13,6 +13,6 @@ public class BadWordCheckerTests
     {
         var service = new BadWordChecker();
 
-        Assert.Equals(expected, service.HasBadWordInText(text));
+        Assert.That(service.HasBadWordInText(text), Is.EqualTo(expected));
     }
 }

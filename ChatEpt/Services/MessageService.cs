@@ -1,6 +1,8 @@
 ﻿using System.Text;
 using ChatEpt.DTOs;
 using ChatEpt.Services.Abstract;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
+using ProfanityFilter = ProfanityFilter.ProfanityFilter;
 
 namespace ChatEpt.Services;
 
@@ -27,4 +29,9 @@ public class MessageService : IMessageService
         var answer = response.Content.ReadAsStringAsync().Result;
         return new MessageServiceDto(request, answer.Trim());
     }
+
+
+    
+
+
 }

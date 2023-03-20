@@ -6,7 +6,16 @@ public class BadWordChecker : IBadWordChecker
 {
     public bool HasBadWordInText(string text)
     {
-        throw new NotImplementedException();
+        var filter = new ProfanityFilter.ProfanityFilter();
+
+        var filteredMessage = filter.DetectAllProfanities(text);
+    
+        if (filteredMessage.Count>0)
+        {
+            return true;
+        }
+
+        return false;
     }
     
 }
