@@ -4,18 +4,12 @@ namespace ChatEpt.Services;
 
 public class BadWordChecker : IBadWordChecker
 {
-    public bool HasBadWordInText(string text)
+    private readonly ProfanityFilter.ProfanityFilter _filter;
+
+    public BadWordChecker(ProfanityFilter.ProfanityFilter filter)
     {
-        var filter = new ProfanityFilter.ProfanityFilter();
-
-        var filteredMessage = filter.DetectAllProfanities(text);
-    
-        if (filteredMessage.Count>0)
-        {
-            return true;
-        }
-
-        return false;
+        _filter = filter;
     }
     
+    public bool HasBadWordInText(string text) => _filter.DetectAllProfanities(text).Count > 0;
 }

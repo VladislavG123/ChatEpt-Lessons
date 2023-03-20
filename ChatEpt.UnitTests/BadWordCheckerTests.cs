@@ -11,7 +11,7 @@ public class BadWordCheckerTests
     [TestCase("Hello World of bitch", true)]
     public void HasBadWordInText_Test(string text, bool expected)
     {
-        var service = new BadWordChecker();
+        var service = new BadWordChecker(new global::ProfanityFilter.ProfanityFilter());
 
         Assert.That(service.HasBadWordInText(text), Is.EqualTo(expected));
     }

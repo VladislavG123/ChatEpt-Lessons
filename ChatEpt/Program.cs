@@ -5,6 +5,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddSingleton<IMessageService, MessageService>(); 
+builder.Services.AddSingleton<ProfanityFilter.ProfanityFilter>(); 
+builder.Services.AddSingleton<IBadWordChecker, BadWordChecker>(); 
 
 // Add HttpClients
 builder.Services.AddHttpClient<MessageService>();
