@@ -6,16 +6,19 @@ namespace ChatEpt.Controllers;
 public class MessageController : ControllerBase
 {
     private readonly IMessageService _messageService;
+    private readonly ApplicationContext _applicationContext;
 
-    public MessageController(IMessageService messageService)
+    public MessageController(IMessageService messageService, ApplicationContext applicationContext)
     {
         _messageService = messageService;
+        _applicationContext = applicationContext;
     }
     
     // POST, GET, DELETE, PUT, PATCH
     [HttpPost("api/messages")] // Attribute
-    public IActionResult SendMessage(string message)
+    public IActionResult SendMessage(string message) // What is love 
     {
+       
         // 1. Получить ответ от ИИ
         var result = _messageService.GetAnswer(message);
         
@@ -29,5 +32,16 @@ public class MessageController : ControllerBase
          * 500 - Problem()
          */
         return Ok(result);
+    }
+
+    [HttpGet("api/messages")]
+    public IActionResult GetSavedMessages()
+    {
+        var messages = _applicationContext.Messages.Select(message => new
+        {
+            message.Request, message.Response
+        }).ToList();
+
+        return Ok(messages);
     }
 }

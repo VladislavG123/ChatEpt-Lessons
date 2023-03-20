@@ -1,15 +1,20 @@
+using ChatEpt;
 using ChatEpt.Services;
 using ChatEpt.Services.Abstract;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddSingleton<IMessageService, MessageService>(); 
+builder.Services.AddScoped<IMessageService, MessageService>();
 builder.Services.AddSingleton<ProfanityFilter.ProfanityFilter>(); 
 builder.Services.AddSingleton<IBadWordChecker, BadWordChecker>(); 
 
 // Add HttpClients
 builder.Services.AddHttpClient<MessageService>();
+
+builder.Services.AddDbContext<ApplicationContext>(x => 
+    x.UseInMemoryDatabase(builder.Configuration.GetConnectionString("InMemory")!));
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
