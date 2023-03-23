@@ -6,12 +6,12 @@ using Microsoft.EntityFrameworkCore;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddScoped<IMessageService, MessageService>();
+builder.Services.AddScoped<ChatEpt.Services.Abstract.IAiService, AiService>();
 builder.Services.AddSingleton<ProfanityFilter.ProfanityFilter>(); 
-builder.Services.AddSingleton<IBadWordChecker, BadWordChecker>(); 
+builder.Services.AddSingleton<IBadWordChecker, BadWordChecker2>(); 
 
 // Add HttpClients
-builder.Services.AddHttpClient<MessageService>();
+builder.Services.AddHttpClient<AiService>();
 
 builder.Services.AddDbContext<ApplicationContext>(x => 
     x.UseInMemoryDatabase(builder.Configuration.GetConnectionString("InMemory")!));

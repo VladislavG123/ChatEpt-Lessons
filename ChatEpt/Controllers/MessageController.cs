@@ -1,36 +1,44 @@
-﻿using ChatEpt.Services.Abstract;
+﻿using ChatEpt.DTOs;
+using ChatEpt.Models;
+using ChatEpt.Services.Abstract;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChatEpt.Controllers;
 
 public class MessageController : ControllerBase
 {
-    private readonly IMessageService _messageService;
+    private readonly IAiService _aiService;
     private readonly ApplicationContext _applicationContext;
+    private readonly IBadWordChecker _badWordChecker;
 
-    public MessageController(IMessageService messageService, ApplicationContext applicationContext)
+    public MessageController(IAiService aiService, ApplicationContext applicationContext, IBadWordChecker badWordChecker)
     {
-        _messageService = messageService;
+        _aiService = aiService;
         _applicationContext = applicationContext;
+        _badWordChecker = badWordChecker;
     }
     
     // POST, GET, DELETE, PUT, PATCH
     [HttpPost("api/messages")] // Attribute
-    public IActionResult SendMessage(string message) // What is love 
+    public IActionResult SendMessage(string message)
     {
-       
-        // 1. Получить ответ от ИИ
-        var result = _messageService.GetAnswer(message);
+        var fromDb = _applicationContext.Messages.FirstOrDefault(x => x.Request.Equals(message));
+        if (fromDb is not null)
+        {
+            return Ok(fromDb.Response);
+        }
+
+        var result = _badWordChecker.HasBadWordInText(message) 
+            ? new MessageServiceDto(message, "Please do not use bad words!") 
+            : _aiService.GetAnswer(message);
+
+        _applicationContext.Messages.Add(new MessageEntity
+        {
+            Request = result.Request,
+            Response = result.Answer
+        });
+        _applicationContext.SaveChanges();
         
-        // 2. Сохранить ответ с запросом в БД
-        // TODO: Entity Framework
-        
-        /*
-         * 200 - Ok(), NoContent()
-         * 300 - info
-         * 400 - BadRequest(), NotFound(), Forbid()
-         * 500 - Problem()
-         */
         return Ok(result);
     }
 

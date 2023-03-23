@@ -2,7 +2,7 @@
 
 namespace ChatEpt.Services.Abstract;
 
-public interface IMessageService
+public interface IAiService
 {
     /// <summary>
     /// An artificial intelligence answers to <param name="request"></param>
