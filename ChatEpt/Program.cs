@@ -8,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddScoped<ChatEpt.Services.Abstract.IAiService, AiService>();
 builder.Services.AddSingleton<ProfanityFilter.ProfanityFilter>(); 
-builder.Services.AddSingleton<IBadWordChecker, BadWordChecker2>(); 
+builder.Services.AddSingleton<IBadWordChecker, BadWordChecker>(); 
 
 // Add HttpClients
 builder.Services.AddHttpClient<AiService>();

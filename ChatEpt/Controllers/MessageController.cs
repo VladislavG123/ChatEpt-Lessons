@@ -39,7 +39,7 @@ public class MessageController : ControllerBase
         });
         _applicationContext.SaveChanges();
         
-        return Ok(result);
+        return Ok(result.Answer);
     }
 
     [HttpGet("api/messages")]
