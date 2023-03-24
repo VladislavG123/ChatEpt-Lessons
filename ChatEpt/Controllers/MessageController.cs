@@ -25,6 +25,8 @@ public class MessageController : ControllerBase
         var fromDb = _applicationContext.Messages.FirstOrDefault(x => x.Request.Equals(message));
         if (fromDb is not null)
         {
+            fromDb.RequestedCount++;
+            _applicationContext.SaveChanges();
             return Ok(fromDb.Response);
         }
 

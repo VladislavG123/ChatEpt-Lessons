@@ -19,5 +19,15 @@ public class TopController : ControllerBase
             .OrderByDescending(x => x.Count)
             .Take(count)
             .ToList());
-    
+
+    [HttpGet("api/top/requests")]
+    public IActionResult GetRequestTop([FromQuery] int count) =>
+        Ok(_context.Messages
+            .OrderByDescending(x => x.RequestedCount)
+            .Take(count)
+            .Select(x => new
+            {
+                x.Request, x.RequestedCount
+            })
+            .ToList());
 }
