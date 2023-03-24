@@ -1,6 +1,7 @@
 ﻿using ChatEpt.DTOs;
 using ChatEpt.Models;
 using ChatEpt.Services.Abstract;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ChatEpt.Controllers;
@@ -11,13 +12,14 @@ public class MessageController : ControllerBase
     private readonly ApplicationContext _applicationContext;
     private readonly IBadWordChecker _badWordChecker;
 
-    public MessageController(IAiService aiService, ApplicationContext applicationContext, IBadWordChecker badWordChecker)
+    public MessageController(IAiService aiService, ApplicationContext applicationContext,
+        IBadWordChecker badWordChecker)
     {
         _aiService = aiService;
         _applicationContext = applicationContext;
         _badWordChecker = badWordChecker;
     }
-    
+
     // POST, GET, DELETE, PUT, PATCH
     [HttpPost("api/messages")] // Attribute
     public IActionResult SendMessage(string message)
@@ -30,8 +32,8 @@ public class MessageController : ControllerBase
             return Ok(fromDb.Response);
         }
 
-        var result = _badWordChecker.HasBadWordInText(message) 
-            ? new MessageServiceDto(message, "Please do not use bad words!") 
+        var result = _badWordChecker.HasBadWordInText(message)
+            ? new MessageServiceDto(message, "Please do not use bad words!")
             : _aiService.GetAnswer(message);
 
         _applicationContext.Messages.Add(new MessageEntity
@@ -40,7 +42,7 @@ public class MessageController : ControllerBase
             Response = result.Answer
         });
         _applicationContext.SaveChanges();
-        
+
         return Ok(result.Answer);
     }
 
@@ -53,5 +55,16 @@ public class MessageController : ControllerBase
         }).ToList();
 
         return Ok(messages);
+    }
+
+    [HttpGet("api/messages/{request}")]
+    public IActionResult GetAnswerByRequest(string request)
+    {
+        var message = _applicationContext.Messages.FirstOrDefault(x
+            => x.Request.Equals(request, StringComparison.InvariantCultureIgnoreCase));
+
+        return message is null
+            ? NotFound($"There is no such message with request={request.Quoted()}")
+            : Ok(message.Response);
     }
 }

@@ -12,7 +12,7 @@ public class TopController : ControllerBase
     }
 
     [HttpGet("api/top/answers")]
-    public ActionResult GetAnswersTop([FromQuery] int count) =>
+    public IActionResult GetAnswersTop([FromQuery] int count) =>
         Ok(_context.Messages
             .GroupBy(x => x.Response)
             .Select(x => new { Answer = x.Key, x.ToList().Count })
