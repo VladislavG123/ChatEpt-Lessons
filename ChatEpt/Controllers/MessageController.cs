@@ -25,7 +25,8 @@ public class MessageController : ControllerBase
     public IActionResult SendMessage(string message)
     {
         var fromDb = _applicationContext.Messages.FirstOrDefault(x => x.Request.Equals(message));
-        if (fromDb is not null)
+        if (fromDb is not null 
+            && !message.ContainsAll(StringComparison.InvariantCultureIgnoreCase, "?", "startup", "idea"))
         {
             fromDb.RequestedCount++;
             _applicationContext.SaveChanges();
