@@ -25,8 +25,7 @@ public class MessageController : ControllerBase
     public IActionResult SendMessage(string message)
     {
         var fromDb = _applicationContext.Messages.FirstOrDefault(x => x.Request.Equals(message));
-        if (fromDb is not null 
-            && !message.ContainsAll(StringComparison.InvariantCultureIgnoreCase, "?", "startup", "idea"))
+        if (fromDb is not null && fromDb.AllowSameRequest)
         {
             fromDb.RequestedCount++;
             _applicationContext.SaveChanges();
@@ -37,13 +36,16 @@ public class MessageController : ControllerBase
             ? new MessageServiceDto(message, "Please do not use bad words!")
             : _aiService.GetAnswer(message);
 
-        _applicationContext.Messages.Add(new MessageEntity
+        if (result.NeedToSave)
         {
-            Request = result.Request,
-            Response = result.Answer
-        });
-        _applicationContext.SaveChanges();
-
+            _applicationContext.Messages.Add(new MessageEntity
+            {
+                Request = result.Request,
+                Response = result.Answer
+            });
+            _applicationContext.SaveChanges();
+        }
+        
         return Ok(result.Answer);
     }
 

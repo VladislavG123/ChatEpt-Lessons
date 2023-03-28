@@ -5,4 +5,5 @@ public class MessageEntity : Entity
     public string Request { get; set; }
     public string Response { get; set; }
     public uint RequestedCount { get; set; } = 1;
+    public bool AllowSameRequest { get; set; }
 }
