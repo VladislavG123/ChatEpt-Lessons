@@ -8,14 +8,14 @@ namespace ChatEpt.Controllers;
 
 public class MessageController : ControllerBase
 {
-    private readonly IAiService _aiService;
+    private readonly IAiMessageRouter _aiMessageRouter;
     private readonly ApplicationContext _applicationContext;
     private readonly IBadWordChecker _badWordChecker;
 
-    public MessageController(IAiService aiService, ApplicationContext applicationContext,
+    public MessageController(IAiMessageRouter aiMessageRouter, ApplicationContext applicationContext,
         IBadWordChecker badWordChecker)
     {
-        _aiService = aiService;
+        _aiMessageRouter = aiMessageRouter;
         _applicationContext = applicationContext;
         _badWordChecker = badWordChecker;
     }
@@ -33,8 +33,8 @@ public class MessageController : ControllerBase
         }
 
         var result = _badWordChecker.HasBadWordInText(message)
-            ? new MessageServiceDto(message, "Please do not use bad words!")
-            : _aiService.GetAnswer(message);
+            ? new MessageDto(message, "Please do not use bad words!")
+            : _aiMessageRouter.GetAnswer(message);
 
         if (result.NeedToSave)
         {

@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using ChatEpt.Services;
+using ChatEpt.Services.Ai;
 
 namespace ChatEpt.UnitTests;
 
@@ -19,7 +20,7 @@ public class AiServiceTests
     public void AiService_StartupIdea(string request)
     {
         // Arrange
-        var aiService = new AiService(new HttpClient());
+        var aiService = new StartupAiService(new HttpClient());
 
         // Act
         var result = aiService.GetAnswer(request);
